@@ -1,0 +1,180 @@
+<?xml version="1.0"?>
+<robot name="simpleplane">
+    <!-- Colors -->
+    <material name="grey">
+        <color rgba="0.91 0.925 0.945 1"/>
+    </material>
+    <material name="black">
+        <color rgba="0 0 0 1"/>
+    </material>
+
+    <!-- Plane -->
+    <link name="base_link">
+        <visual>
+            <geometry>
+                <box size="20 20 0.01"/>
+                <origin rpy="0 0 0" xyz="-10 -10 -0.005"/>
+            </geometry>
+            <material name="grey"/>
+        </visual>
+        <collision>
+             <geometry>
+                <box size="20 20 0.01"/>
+                <origin rpy="0 0 0" xyz="-10 -10 -0.005"/>
+            </geometry>
+        </collision>
+        <inertial>
+            <mass value="0"/>
+            <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0"/>
+        </inertial>
+        <contact>
+            <lateral_friction value="4"/>
+        </contact>
+    </link>
+
+    <!-- Walls -->
+    <link name="north_wall">
+        <visual>
+            <geometry>
+                <box size="1 21 1"/>
+                <origin rpy="0 0 0" xyz="0 0 0"/>
+            </geometry>
+            <material name="black"/>
+        </visual>
+        <collision>
+             <geometry>
+                <box size="1 21 1"/>
+            </geometry>
+        </collision>
+        <inertial>
+            <mass value="0"/>
+            <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0"/>
+        </inertial>
+    </link>
+    <joint name="north_wall_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="north_wall"/>
+        <origin rpy="0 0 0" xyz="10 0 .5"/>
+    </joint>
+
+    <link name="south_wall">
+        <visual>
+            <geometry>
+                <box size="1 21 1"/>
+                <origin rpy="0 0 0" xyz="0 0 0"/>
+            </geometry>
+            <material name="black"/>
+        </visual>
+        <collision>
+             <geometry>
+                <box size="1 21 1"/>
+            </geometry>
+        </collision>
+        <inertial>
+            <mass value="0"/>
+            <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0"/>
+        </inertial>
+    </link>
+    <joint name="south_wall_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="south_wall"/>
+        <origin rpy="0 0 0" xyz="-10 0 .5"/>
+    </joint>
+
+    <link name="east_wall">
+        <visual>
+            <geometry>
+                <box size="1 20 1"/>
+                <origin rpy="0 0 0" xyz="0 0 0"/>
+            </geometry>
+            <material name="black"/>
+        </visual>
+        <collision>
+             <geometry>
+                <box size="1 20 1"/>
+            </geometry>
+        </collision>
+        <inertial>
+            <mass value="0"/>
+            <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0"/>
+        </inertial>
+    </link>
+    <joint name="east_wall_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="east_wall"/>
+        <origin rpy="0 0 1.5707963267948966" xyz="0 10 .5"/>
+    </joint>
+
+    <link name="west_wall">
+        <visual>
+            <geometry>
+                <box size="1 20 1"/>
+                <origin rpy="0 0 0" xyz="0 0 0"/>
+            </geometry>
+            <material name="black"/>
+        </visual>
+        <collision>
+             <geometry>
+                <box size="1 20 1"/>
+            </geometry>
+        </collision>
+        <inertial>
+            <mass value="0"/>
+            <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0"/>
+        </inertial>
+    </link>
+    <joint name="west_wall_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="west_wall"/>
+        <origin rpy="0 0 1.5707963267948966" xyz="0 -10 .5"/>
+    </joint>
+
+    <link name="middle_east_wall">
+        <visual>
+            <geometry>
+                <box size="2 8 1"/>
+                <origin rpy="0 0 0" xyz="0 0 0"/>
+            </geometry>
+            <material name="black"/>
+        </visual>
+        <collision>
+             <geometry>
+                <box size="2 8 1"/>
+            </geometry>
+        </collision>
+        <inertial>
+            <mass value="0"/>
+            <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0"/>
+        </inertial>
+    </link>
+    <joint name="middle_east_wall_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="middle_east_wall"/>
+        <origin rpy="0 0 0" xyz="2 6 .5"/>
+    </joint>
+
+    <link name="middle_west_wall">
+        <visual>
+            <geometry>
+                <box size="2 8 1"/>
+                <origin rpy="0 0 0" xyz="0 0 0"/>
+            </geometry>
+            <material name="black"/>
+        </visual>
+        <collision>
+             <geometry>
+                <box size="2 8 1"/>
+            </geometry>
+        </collision>
+        <inertial>
+            <mass value="0"/>
+            <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0"/>
+        </inertial>
+    </link>
+    <joint name="middle_west_wall_joint" type="fixed">
+        <parent link="base_link"/>
+        <child link="middle_west_wall"/>
+        <origin rpy="0 0 0" xyz="2 -6 .5"/>
+    </joint>
+
+</robot>

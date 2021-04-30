@@ -1,0 +1,1 @@
+from exceptional_rl_envs.warehouse2 import Warehouse, MAP, MAP_WITH_EXCEPTION
