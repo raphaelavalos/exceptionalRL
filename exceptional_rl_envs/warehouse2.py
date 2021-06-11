@@ -404,6 +404,7 @@ class World:
         dt = self.dt
         if self.var_dt > 0.:
             dt = self.np_random.normal(dt, self.var_dt)
+        dt_ = dt
         done = False
         reward = 0
         exception = self.agent.in_exception
@@ -425,11 +426,11 @@ class World:
             done = True
         if not done:
             reward += PENALTY_TIME
-        return reward, done, exception
+        return reward, done, exception, dt_
 
-    def observe(self):
+    def observe(self, reset=False):
         dx, dy = 0., 0.
-        if self.var_pos > 0:
+        if self.var_pos > 0 and not reset:
             dx, dy = self.np_random.normal(0, self.var_pos, 2)
         obs = np.array([
             (self.agent.x + dx) / self.warehouse.shape[0],
@@ -468,21 +469,28 @@ class Warehouse(gym.Env):
         """Set the seed of the random number generator."""
         return self.world.seed(seed)
 
-    def _observe(self):
-        return self.world.observe()
+    def _observe(self, reset=False):
+        return self.world.observe(reset)
 
     def reset(self):
         self._time_step = 0
         self.world.reset()
-        return self._observe()
+        return self._observe(True)
 
     def step(self, action):
         # Actions are (Increase speed, Decrease speed, Rotate Left, Rotate Right, Noop)
-        reward, done, exception = self.world.act(action)
+        reward, done, exception, dt = self.world.act(action)
         self._time_step += 1
         if self._time_step >= self.horizon:
             done = True
-        return self._observe(), reward, done, {"exception": exception}
+        info = {
+            "exception": exception,
+            "dt": dt,
+            "real_x": self.agent.x,
+            "real_y": self.agent.y,
+
+        }
+        return self._observe(), reward, done, info
 
     def render(self, mode='human'):
         box_size = 50
