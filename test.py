@@ -26,7 +26,7 @@ if __name__ == '__main__':
     tune.run('DQN',
              config={"env": "warehouse_env",
                      "framework": "torch",
-                     "num_gpus": 0.25,
+                     "num_gpus": 0.2,
                      "num_gpus_per_worker": 0.1,
                      'num_envs_per_worker': 6,
                      "evaluation_interval": 100,
@@ -37,7 +37,7 @@ if __name__ == '__main__':
                      "env_config": {
                          "var_pos": 0.125,
                          "var_dt": 0.1,
-                         "maps": [MAP, MAP_WITH_EXCEPTION],
+                         "maps": tune.grid_search([[MAP], [MAP, MAP_WITH_EXCEPTION]]),
                      },
                      "evaluation_config": {"monitor": False,
                                            "explore": False,},

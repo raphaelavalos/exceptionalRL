@@ -28,10 +28,10 @@ WWWWWWWWWWWWW
 """
 
 MIN_JUMP = 1e-7
-PENALTY_COLLISION = -1
+PENALTY_COLLISION = -.1
 REWARD_PICKUP = 10
 REWARD_DELIVER = 10
-PENALTY_TIME = -0.05
+PENALTY_TIME = -0.0
 DEFAULT_SPEED_FACTOR = 1.
 EXCEPTION_SPEED_FACTOR = 2.
 
@@ -406,10 +406,12 @@ class World:
             dt = self.np_random.normal(dt, self.var_dt)
         done = False
         reward = 0
+        exception = self.agent.in_exception
 
         while dt > 0:
             i, j = int(self.agent.x), int(self.agent.y)
             dt = self.warehouse[i, j].trajectory(self.agent, dt)
+            exception = exception or self.agent.in_exception
         if self.agent.has_collided:
             self.agent.v = 0.
             reward += PENALTY_COLLISION
@@ -423,7 +425,7 @@ class World:
             done = True
         if not done:
             reward += PENALTY_TIME
-        return reward, done
+        return reward, done, exception
 
     def observe(self):
         dx, dy = 0., 0.
@@ -476,11 +478,11 @@ class Warehouse(gym.Env):
 
     def step(self, action):
         # Actions are (Increase speed, Decrease speed, Rotate Left, Rotate Right, Noop)
-        reward, done = self.world.act(action)
+        reward, done, exception = self.world.act(action)
         self._time_step += 1
         if self._time_step >= self.horizon:
             done = True
-        return self._observe(), reward, done, {}
+        return self._observe(), reward, done, {"exception": exception}
 
     def render(self, mode='human'):
         box_size = 50
@@ -500,7 +502,7 @@ class Warehouse(gym.Env):
                         ((i + 1) * box_size, (j + 1) * box_size),
                         ((i + 1) * box_size, j * box_size),
                     ])
-                    box.set_color(*self.warehouse[i, j].color)
+                    box.set_color(*warehouse[i, j].color)
                     self.viewer.add_geom(box)
                     self.filled_polygons[i, j] = box
             self.agent.geom = rendering.make_circle(
