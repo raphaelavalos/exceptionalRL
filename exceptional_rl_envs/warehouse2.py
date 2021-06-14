@@ -486,8 +486,8 @@ class Warehouse(gym.Env):
         info = {
             "exception": exception,
             "dt": dt,
-            "real_x": self.agent.x,
-            "real_y": self.agent.y,
+            "real_x": self.agent.x / self.warehouse.shape[0],
+            "real_y": self.agent.y / self.warehouse.shape[1],
 
         }
         return self._observe(), reward, done, info

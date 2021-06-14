@@ -12,13 +12,13 @@ if __name__ == '__main__':
     ray.init(address='auto')
 
     NUM_EPISODES = 10000
-    NUM_ENVS = 12
+    NUM_ENVS = 24
 
     columns = ["episode_id", "time_step", "x", "y", "v", "ort", "has_package",
                "package_x", "package_y", "action", "q_value_0", "q_value_1",
                "q_value_2", "q_value_3", "q_value_4", "reward", "done",
                "next_x", "next_y", "next_v", "next_ort", "next_has_package",
-               "next_package_x", "next_package_y", "is_exception"]
+               "next_package_x", "next_package_y", "is_exception", "real_x", "real_y", "dt"]
     dtypes = {
         "episode_id": np.int,
         "time_step": np.int,
@@ -44,16 +44,21 @@ if __name__ == '__main__':
         "next_package_x": np.float,
         "next_package_y": np.float,
         "is_exception": np.bool,
+        "real_x": np.float,
+        "real_y": np.float,
+        "dt": np.float,
     }
 
-
+    info_keys = ["exception", "real_x", "real_y", "dt"]
     def warehouse_env_creator(args):
         return Warehouse(**args)
 
     path = "/home/raphael/Experiments/ray/DQN/DQN_warehause_env_906fe_00000/checkpoint_{:06}/checkpoint-{}"
     checkpoint = 1800
     params_path = os.path.join(os.path.dirname(os.path.dirname(path)), 'params.pkl')
-    a = np.vectorize(lambda x: x["exception"])
+    a = np.vectorize(lambda x, e: x[e])
+    def process_info(infos):
+        return np.array([[info[key] for key in info_keys] for info in infos])
     register_env('warehouse_env', warehouse_env_creator)
     # env_config = {'map': MAP}
     # env = VectorEnv.wrap(existing_envs=[warehouse_env_creator(env_config) for _ in range(NUM_ENVS)],
@@ -85,7 +90,8 @@ if __name__ == '__main__':
         x["rewards"][:, None],
         x["dones"][:, None],
         x["new_obs"],
-        a(x["infos"])[:, None]], -1),
+        process_info(x["infos"])],
+        -1),
                samples)
 
     data = np.concatenate(list(rows), 0)
@@ -102,7 +108,7 @@ if __name__ == '__main__':
     print("success rate: {}".format(np.mean(df_.success_rate==2.0)))
     print(df_.reward.describe())
 
-    df.to_csv('data_exception.csv', index=False,)
+    df.to_csv('data_exception2.csv', index=False,)
 
 
     #
